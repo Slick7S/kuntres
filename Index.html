@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת קונטרסים חכמה 2025</title>
+    <style>
+        :root {
+            --primary-color: #5e72e4;
+            --secondary-color: #f7fafc;
+            --text-color: #2d3748;
+            --danger-color: #f56565;
+            --success-color: #48bb78;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Heebo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f6f9fc, #edf2f7);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .main-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .history-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+        }
+
+        .total-amount {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .buttons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .amount-btn {
+            background: var(--secondary-color);
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .amount-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-amount {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .custom-amount input {
+            flex: 1;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 2px solid #e2e8f0;
+            font-size: 1.25rem;
+        }
+
+        .custom-amount input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .custom-amount button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .manual-change {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+        }
+
+        .manual-change h3 {
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        .manual-change-form {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .manual-change-form input {
+            flex: 1;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 2px solid #e2e8f0;
+            font-size: 1.25rem;
+        }
+
+        .manual-change-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .manual-change-form button {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .history-panel h2 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            color: #4a5568;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-count {
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: normal;
+            background-color: #EDF2F7;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        .history-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .history-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius);
+            background-color: #f9fafc;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .history-item:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+        
+        .history-date {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+        
+        .history-data {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .history-after {
+            color: var(--primary-color);
+        }
+        
+        .history-before {
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        .history-change {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .history-change.positive {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success-color);
+        }
+
+        .history-change.negative {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 2rem;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        #confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .dialog-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .dialog-content h3 {
+            margin-bottom: 1rem;
+        }
+
+        .dialog-content p {
+            margin-bottom: 2rem;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .dialog-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .dialog-btn.cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .dialog-btn.confirm {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .selected-amount {
+            background-color: #5e72e4 !important;
+            color: white !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .total-amount {
+                font-size: 2.5rem;
+            }
+            
+            .buttons-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .history-panel {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+                margin-bottom: 1.5rem;
+            }
+            
+            .custom-amount {
+                flex-direction: column;
+            }
+            
+            .custom-amount input,
+            .custom-amount button,
+            .manual-change-form input,
+            .manual-change-form button {
+                width: 100%;
+            }
+            
+            .manual-change-form {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="history-panel">
+            <h2>
+                היסטוריית שינויים
+                <span class="history-count" id="history-count">0 פעולות</span>
+            </h2>
+            <div id="history-list" class="history-list">
+                <div class="history-empty" id="history-empty">אין פעולות בהיסטוריה עדיין</div>
+                <!-- History items will be added here dynamically -->
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <h1 class="total-amount">
+                <span id="total-amount">2000</span>
+                <span>קונטרסים חינם</span>
+            </h1>
+            
+            <div class="buttons-container">
+                <button class="amount-btn" onclick="selectAmount(50)">50 קונ'</button>
+                <button class="amount-btn" onclick="selectAmount(100)">100 קונ'</button>
+                <button class="amount-btn" onclick="selectAmount(150)">150 קונ'</button>
+                <button class="amount-btn" onclick="selectAmount(200)">200 קונ'</button>
+                <button class="amount-btn" onclick="selectAmount(250)">250 קונ'</button>
+                <button class="amount-btn" onclick="selectAmount(300)">300 קונ'</button>
+            </div>
+            
+            <div class="custom-amount">
+                <input type="number" id="custom-amount" placeholder="הזן סכום">
+                <button onclick="subtractCustomAmount()">הפחת</button>
+            </div>
+            
+            <div class="manual-change">
+                <h3>עדכון סכום ידני</h3>
+                <div class="manual-change-form">
+                    <input type="number" id="manual-amount" placeholder="הזן סכום חדש">
+                    <button onclick="showConfirmDialog()">עדכן</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirm-dialog">
+        <div class="dialog-content">
+            <h3>אישור שינוי</h3>
+            <p>האם אתה בטוח שברצונך לשנות את הסכום הכולל ל- <span id="new-amount-value"></span>?</p>
+            <div class="dialog-buttons">
+                <button class="dialog-btn cancel" onclick="closeConfirmDialog()">ביטול</button>
+                <button class="dialog-btn confirm" onclick="updateTotalAmount()">אישור</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // מצב האפליקציה
+        let totalAmount = 2000;
+        let history = [];
+        let newAmount = 0;
+        let selectedAmount = null;
+        
+        // פורמט מספר עם פסיקים
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // בחירת סכום
+        function selectAmount(amount) {
+            // איפוס כל הכפתורים
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected-amount');
+            });
+            
+            // בדיקה אם נבחר אותו סכום שוב (ביטול בחירה)
+            if (selectedAmount === amount) {
+                selectedAmount = null;
+                return;
+            }
+            
+            // סימון הכפתור הנבחר
+            selectedAmount = amount;
+            
+            // מציאת הכפתור וסימונו
+            const buttons = document.querySelectorAll('.amount-btn');
+            for (let btn of buttons) {
+                if (btn.textContent.includes(amount)) {
+                    btn.classList.add('selected-amount');
+                    break;
+                }
+            }
+        }
+        
+        // הפחתת סכום קבוע
+        function subtractAmount() {
+            if (!selectedAmount) {
+                alert('אנא בחר סכום להפחתה');
+                return;
+            }
+            
+            if (selectedAmount > totalAmount) {
+                alert('הסכום שנבחר גדול מהסכום הכולל הנוכחי');
+                return;
+            }
+            
+            const oldAmount = totalAmount;
+            totalAmount -= selectedAmount;
+            
+            // עדכון התצוגה
+            document.getElementById('total-amount').textContent = formatNumber(totalAmount);
+            
+            // הוספה להיסטוריה
+            addToHistory(oldAmount, totalAmount, -selectedAmount, `הפחתה של ${selectedAmount} קונ'`);
+            
+            // איפוס הבחירה
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected-amount');
+            });
+            selectedAmount = null;
+        }
+        
+        // הפחתת סכום מותאם אישית
+        function subtractCustomAmount() {
+            // אם יש סכום נבחר, מפחיתים אותו במקום הסכום המותאם אישית
+            if (selectedAmount) {
+                subtractAmount();
+                return;
+            }
+            
+            const input = document.getElementById('custom-amount');
+            const amount = parseInt(input.value);
+            
+            if (!amount || isNaN(amount) || amount <= 0) {
+                alert('אנא הזן סכום תקין');
+                return;
+            }
+            
+            if (amount > totalAmount) {
+                alert('הסכום שהוזן גדול מהסכום הכולל הנוכחי');
+                return;
+            }
+            
+            const oldAmount = totalAmount;
+            totalAmount -= amount;
+            
+            // עדכון התצוגה
+            document.getElementById('total-amount').textContent = formatNumber(totalAmount);
+            
+            // הוספה להיסטוריה
+            addToHistory(oldAmount, totalAmount, -amount, `הפחתה מותאמת אישית של ${amount} קונ'`);
+            
+            // איפוס השדה
+            input.value = '';
+        }
+        
+        // הצגת דיאלוג אישור לעדכון סכום כולל
+        function showConfirmDialog() {
+            const input = document.getElementById('manual-amount');
+            const amount = parseInt(input.value);
+            
+            if ((!amount && amount !== 0) || isNaN(amount) || amount < 0) {
+                alert('אנא הזן סכום תקין');
+                return;
+            }
+            
+            // שמירת הסכום החדש והצגת הדיאלוג
+            newAmount = amount;
+            document.getElementById('new-amount-value').textContent = `${formatNumber(amount)} קונטרסים חינם`;
+            document.getElementById('confirm-dialog').style.display = 'flex';
+        }
+        
+        // סגירת דיאלוג האישור
+        function closeConfirmDialog() {
+            document.getElementById('confirm-dialog').style.display = 'none';
+        }
+        
+        // עדכון הסכום הכולל לאחר אישור
+        function updateTotalAmount() {
+            const oldAmount = totalAmount;
+            const change = newAmount - oldAmount;
+            
+            totalAmount = newAmount;
+            
+            // עדכון התצוגה
+            document.getElementById('total-amount').textContent = formatNumber(totalAmount);
+            
+            // הוספה להיסטוריה
+            const action = change >= 0 ? `עדכון ידני (+${formatNumber(change)})` : `עדכון ידני (${formatNumber(change)})`;
+            addToHistory(oldAmount, totalAmount, change, action);
+            
+            // איפוס השדה וסגירת הדיאלוג
+            document.getElementById('manual-amount').value = '';
+            closeConfirmDialog();
+        }
+        
+        // הוספה להיסטוריה
+        function addToHistory(oldAmount, newAmount, change, action) {
+            const now = new Date();
+            const timestamp = now.toLocaleString('he-IL');
+            
+            // יצירת פריט היסטוריה חדש
+            const historyItem = {
+                timestamp,
+                oldAmount,
+                newAmount,
+                change,
+                action
+            };
+            
+            // הוספה לתחילת המערך
+            history.unshift(historyItem);
+            
+            // הגבלה ל-100 פריטים
+            if (history.length > 100) {
+                history.pop();
+            }
+            
+            // עדכון תצוגת ההיסטוריה
+            renderHistory();
+            
+            // עדכון מספר הפעולות
+            updateHistoryCount();
+        }
+        
+        // עדכון מספר הפעולות בהיסטוריה
+        function updateHistoryCount() {
+            const count = history.length;
+            const countText = count === 1 ? "פעולה אחת" : count + " פעולות";
+            document.getElementById('history-count').textContent = countText;
+            
+            // הצגה או הסתרה של הודעת "אין פעולות"
+            const emptyElement = document.getElementById('history-empty');
+            if (count > 0) {
+                emptyElement.style.display = 'none';
+            } else {
+                emptyElement.style.display = 'block';
+            }
+        }
+        
+        // עדכון תצוגת ההיסטוריה
+        function renderHistory() {
+            const historyList = document.getElementById('history-list');
+            
+            // שמירת הרכיב של "אין פעולות"
+            const emptyElement = document.getElementById('history-empty');
+            
+            // מחיקת כל הפריטים מלבד ההודעה של "אין פעולות"
+            historyList.innerHTML = '';
+            historyList.appendChild(emptyElement);
+            
+            // הוספת הפריטים החדשים
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const isPositive = item.change > 0;
+                const changeSymbol = isPositive ? '+' : '';
+                const changeClass = isPositive ? 'positive' : 'negative';
+                const changeIcon = isPositive ? '⬆️' : '⬇️';
+                
+                historyItem.innerHTML = `
+                    <div class="history-header">
+                        <div class="history-action">${item.action}</div>
+                        <div class="history-date">${item.timestamp}</div>
+                    </div>
+                    <div class="history-data">
+                        <div class="history-amounts">
+                            <span class="history-before">${formatNumber(item.oldAmount)}</span>
+                            <span class="history-after">${formatNumber(item.newAmount)} קונטרסים חינם</span>
+                        </div>
+                        <div class="history-change ${changeClass}">
+                            ${changeIcon} ${changeSymbol}${formatNumber(Math.abs(item.change))}
+                        </div>
+                    </div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+            
+            // עדכון מספר הפעולות
+            updateHistoryCount();
+        }
+        
+        // הוספת מאזין אירועים לכפתור ההפחתה
+        document.addEventListener('DOMContentLoaded', function() {
+            const subtractButton = document.querySelector('.custom-amount button');
+            subtractButton.addEventListener('click', subtractAmount);
+            
+            // פורמט מספר ראשוני
+            document.getElementById('total-amount').textContent = formatNumber(totalAmount);
+            
+            // עדכון מספר הפעולות בתחילה
+            updateHistoryCount();
+        });
+    </script>
+</body>
+</html>
